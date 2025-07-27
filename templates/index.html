@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dev Dk | Portfólio</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='dev.png') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(16px);
+            animation: fadeInUp 0.7s forwards;
+            transition: opacity 0.7s, transform 0.7s;
+        }
+        .fade-in.delay-1 { animation-delay: 0.1s; }
+        .fade-in.delay-2 { animation-delay: 0.2s; }
+        .fade-in.delay-3 { animation-delay: 0.3s; }
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+        .navbar-blur {
+            background: rgba(255,255,255,0.85)!important;
+            backdrop-filter: blur(8px);
+        }
+        /* Transições customizadas */
+        .btn, .btn-lg, .btn-outline-primary {
+            transition: background 0.3s, color 0.3s, box-shadow 0.3s, transform 0.2s;
+        }
+        .btn:hover, .btn:focus {
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 6px 24px 0 rgba(0,0,0,0.10);
+        }
+        .card, .shadow-sm {
+            transition: box-shadow 0.3s, transform 0.2s;
+        }
+        .card:hover, .shadow-sm:hover {
+            box-shadow: 0 8px 32px 0 rgba(0,0,0,0.13);
+            transform: translateY(-4px) scale(1.02);
+        }
+        .nav-link, .link-light {
+            transition: color 0.2s, text-shadow 0.2s;
+        }
+        .nav-link:hover, .nav-link.active, .link-light:hover {
+            color: #0d6efd !important;
+            text-shadow: 0 2px 8px rgba(13,110,253,0.10);
+        }
+        .badge {
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+        }
+        .badge:hover {
+            background: #0d6efd !important;
+            color: #fff !important;
+            box-shadow: 0 2px 8px rgba(13,110,253,0.10);
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-blur fixed-top shadow-sm">
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="#">Dev Dk</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="#sobre">Sobre</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#projetos">Projetos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#contato">Contato</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="d-flex flex-column justify-content-center align-items-center text-center min-vh-100 bg-white pt-5" style="padding-top: 100px;">
+        <img src="{{ url_for('static', filename='eze.png') }}" alt="Foto de Sousa Ezembro" class="rounded-circle shadow mb-4" style="width: 140px; height: 140px; object-fit: cover;" />
+
+        <h1 class="display-4 fw-bold mb-3 fade-in">Olá, sou Sousa Ezembro</h1>
+        <p class="lead text-secondary mb-4 fade-in delay-1">Desenvolvedor apaixonado por tecnologia e inovação.</p>
+        <a href="#contato" class="btn btn-primary btn-lg fade-in delay-2 shadow-sm">Fale comigo</a>
+    </section>
+
+    <!-- Sobre -->
+    <section id="sobre" class="container py-5">
+        <h2 class="fw-bold mb-4">Sobre</h2>
+        <p class="mb-4 fs-5 text-secondary">Sou um desenvolvedor apaixonado por tecnologia, com experiência em criação de sistemas web, automações e aplicações modernas. Trabalho com React, Python, MySQL e mais.</p>
+        <h5 class="mb-2">Tecnologias:</h5>
+        <ul class="list-inline">
+            <li class="list-inline-item mb-2"><span class="badge bg-primary bg-opacity-10 text-primary fs-6">React</span></li>
+            <li class="list-inline-item mb-2"><span class="badge bg-primary bg-opacity-10 text-primary fs-6">Bootstrap</span></li>
+            <li class="list-inline-item mb-2"><span class="badge bg-primary bg-opacity-10 text-primary fs-6">Python</span></li>
+            <li class="list-inline-item mb-2"><span class="badge bg-primary bg-opacity-10 text-primary fs-6">MySQL</span></li>
+            <li class="list-inline-item mb-2"><span class="badge bg-primary bg-opacity-10 text-primary fs-6">FastAPI</span></li>
+            <li class="list-inline-item mb-2"><span class="badge bg-primary bg-opacity-10 text-primary fs-6">Node.js</span></li>
+        </ul>
+    </section>
+
+    <!-- Projetos -->
+    <section id="projetos" class="bg-white py-5">
+      <div class="container">
+        <h2 class="fw-bold mb-5">Projetos</h2>
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="card h-100 shadow-sm fade-in">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title fw-semibold">Sistema de Gestão Escolar</h5>
+                <p class="card-text flex-grow-1">Plataforma completa para administração de escolas, com módulos de alunos, professores e notas.</p>
+                <a href="#" class="btn btn-outline-primary mt-auto">Ver projeto</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card h-100 shadow-sm fade-in delay-1">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title fw-semibold">Assistente Virtual Zion</h5>
+                <p class="card-text flex-grow-1">Assistente inteligente para automação de tarefas e integração com múltiplos sistemas.</p>
+                <a href="#" class="btn btn-outline-primary mt-auto">Ver projeto</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card h-100 shadow-sm fade-in delay-2">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title fw-semibold">UpSite</h5>
+                <p class="card-text flex-grow-1">Ferramenta para criação rápida de sites modernos e responsivos.</p>
+                <a href="#" class="btn btn-outline-primary mt-auto">Ver projeto</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contato -->
+    <section id="contato" class="container py-5">
+      <h2 class="fw-bold mb-4">Contato</h2>
+      <form action="https://formspree.io/f/xgvzkjrw" method="POST" class="bg-white rounded-4 shadow-sm p-4 p-md-5 fade-in" style="max-width: 600px; margin: auto;">
+        <div class="mb-3">
+          <label for="nome" class="form-label">Nome *</label>
+          <input type="text" class="form-control" id="nome" name="nome" required>
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">E-mail *</label>
+          <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+        <div class="mb-3">
+          <label for="mensagem" class="form-label">Mensagem *</label>
+          <textarea class="form-control" id="mensagem" name="mensagem" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg w-100">Enviar</button>
+      </form>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
+      <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between gap-3">
+        <div class="d-flex gap-4 mb-2 mb-md-0">
+          <a href="https://github.com/sousaezembro" target="_blank" class="link-light link-opacity-75-hover text-decoration-none">
+            <i class="bi bi-github me-1"></i>GitHub
+          </a>
+          <a href="https://linkedin.com/in/sousaezembro" target="_blank" class="link-light link-opacity-75-hover text-decoration-none">
+            <i class="bi bi-linkedin me-1"></i>LinkedIn
+          </a>
+          <a href="https://wa.me/258849361638" target="_blank" class="link-light link-opacity-75-hover text-decoration-none">
+            <i class="bi bi-whatsapp me-1"></i>WhatsApp
+          </a>
+        </div>
+        <span class="small">&copy; {{ year }} Dev Dk. Todos os direitos reservados.</span>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Fade-in animation on scroll
+      document.addEventListener('DOMContentLoaded', function() {
+        function reveal() {
+          document.querySelectorAll('.fade-in').forEach(function(el) {
+            var rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight - 40) {
+              el.style.visibility = 'visible';
+              el.classList.add('show');
+            }
+          });
+        }
+        window.addEventListener('scroll', reveal);
+        reveal();
+      });
+    </script>
+</body>
+</html>
