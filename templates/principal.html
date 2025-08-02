@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>EzMedia - Principal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        .status-Excluído td { background-color: #f28b82 !important; }
+        .status-Aprovado td { background-color: #ccffcc !important; }
+        .status-Dispensado td { background-color: #fff2b2 !important; }
+    </style>
+</head>
+<body class="bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <span class="navbar-brand">EzMedia</span>
+        <div class="d-flex">
+            <span class="navbar-text me-3">Aluno: <b>{{ usuario.capitalize() }}</b></span>
+            <a href="{{ url_for('sobre') }}" class="btn btn-outline-light me-2">Sobre</a>
+            <a href="{{ url_for('logout') }}" class="btn btn-outline-light">Sair</a>
+        </div>
+    </div>
+</nav>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">Adicionar Disciplina</div>
+                <div class="card-body">
+                    {% if erro %}
+                        <div class="alert alert-danger">{{ erro }}</div>
+                    {% endif %}
+                    <form method="post" id="formAdicionar">
+                        <div class="mb-2">
+                            <label class="form-label">Disciplina</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-journal-text"></i></span>
+                                <input type="text" class="form-control" name="disciplina" placeholder="Ex: Matemática" required>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col">
+                                <label class="form-label">Nota 1</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-123"></i></span>
+                                    <input type="text" class="form-control" name="nota1" placeholder="0 a 20">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Nota 2</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-123"></i></span>
+                                    <input type="text" class="form-control" name="nota2" placeholder="0 a 20">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col">
+                                <label class="form-label">Trabalho</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-pencil"></i></span>
+                                    <input type="text" class="form-control" name="trabalho" placeholder="0 a 20">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Projeto</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-award"></i></span>
+                                    <input type="text" class="form-control" name="projeto" placeholder="0 a 20">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Adicionar</button>
+                    </form>
+                </div>
+            </div>
+            <div class="mb-3 d-flex gap-2">
+                <a href="{{ url_for('exportar_csv') }}" class="btn btn-outline-secondary">Exportar para CSV</a>
+                <a href="{{ url_for('exportar_pdf') }}" class="btn btn-outline-warning">Exportar para PDF</a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">Histórico de Disciplinas</div>
+                <div class="card-body p-0">
+                    <div class="p-3">
+                        <div class="row mb-2">
+                            <div class="col-md-6">
+                                <label for="filtroStatus" class="form-label mb-0">Filtrar por status:</label>
+                                <select id="filtroStatus" class="form-select form-select-sm w-auto d-inline-block ms-2">
+                                    <option value="">Todos</option>
+                                    <option value="Aprovado">Aprovado</option>
+                                    <option value="Excluído">Excluído</option>
+                                    <option value="Dispensado">Dispensado</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="tabelaDisciplinas" class="table table-bordered table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Disciplina</th>
+                                    <th>Nota 1</th>
+                                    <th>Nota 2</th>
+                                    <th>Trabalho</th>
+                                    <th>Projeto</th>
+                                    <th>Média</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for dado in historico %}
+                                <tr class="status-{{ dado.status }}">
+                                    <td>{{ dado.disciplina }}</td>
+                                    <td>{{ '%.2f' % dado.notas[0] if dado.notas[0] is not none else '' }}</td>
+                                    <td>{{ '%.2f' % dado.notas[1] if dado.notas[1] is not none else '' }}</td>
+                                    <td>{{ '%.2f' % dado.notas[2] if dado.notas[2] is not none else '' }}</td>
+                                    <td>{{ '%.2f' % dado.notas[3] if dado.notas[3] is not none else '' }}</td>
+                                    <td>{{ '%.2f' % dado.media if dado.media is not none else '' }}</td>
+                                    <td><b>{{ dado.status }}</b></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary btn-editar" data-index="{{ loop.index0 }}" title="Editar"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger btn-excluir" data-index="{{ loop.index0 }}" title="Excluir"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr><td colspan="8" class="text-center">Nenhuma disciplina cadastrada.</td></tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Modal de confirmação de exclusão -->
+                <div class="modal fade" id="modalExcluir" tabindex="-1" aria-labelledby="modalExcluirLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="modalExcluirLabel">Confirmar exclusão</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        Tem certeza que deseja excluir esta disciplina?
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-danger" id="btnConfirmarExcluir">Excluir</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Modal de edição de disciplina -->
+                <div class="modal fade" id="modalEditar" tabindex="-1" aria-labelledby="modalEditarLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <form id="formEditar" method="post">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="modalEditarLabel">Editar Disciplina</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          <input type="hidden" name="edit_index" id="edit_index">
+                          <div class="mb-2">
+                            <label class="form-label">Disciplina</label>
+                            <input type="text" class="form-control" name="edit_disciplina" id="edit_disciplina" required>
+                          </div>
+                          <div class="row mb-2">
+                            <div class="col">
+                              <label class="form-label">Nota 1</label>
+                              <input type="text" class="form-control" name="edit_nota1" id="edit_nota1">
+                            </div>
+                            <div class="col">
+                              <label class="form-label">Nota 2</label>
+                              <input type="text" class="form-control" name="edit_nota2" id="edit_nota2">
+                            </div>
+                          </div>
+                          <div class="row mb-2">
+                            <div class="col">
+                              <label class="form-label">Trabalho</label>
+                              <input type="text" class="form-control" name="edit_trabalho" id="edit_trabalho">
+                            </div>
+                            <div class="col">
+                              <label class="form-label">Projeto</label>
+                              <input type="text" class="form-control" name="edit_projeto" id="edit_projeto">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                          <button type="submit" class="btn btn-success">Salvar</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script>
+    let indexParaExcluir = null;
+    $(document).ready(function() {
+        var table = $('#tabelaDisciplinas').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json'
+            },
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'csvHtml5',
+                    text: 'Exportar CSV',
+                    className: 'btn btn-outline-secondary btn-sm'
+                },
+                {
+                    extend: 'excelHtml5',
+                    text: 'Exportar XLSX',
+                    className: 'btn btn-outline-success btn-sm'
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: 'Exportar PDF',
+                    className: 'btn btn-outline-warning btn-sm',
+                    orientation: 'landscape',
+                    pageSize: 'A4',
+                    customize: function(doc) {
+                        doc.defaultStyle.fontSize = 10;
+                    }
+                }
+            ],
+            order: [[0, 'asc']],
+            pageLength: 7
+        });
+        // Filtro por status
+        $('#filtroStatus').on('change', function() {
+            var val = $(this).val();
+            if(val) {
+                table.column(6).search('^'+val+'$', true, false).draw();
+            } else {
+                table.column(6).search('').draw();
+            }
+        });
+        // Excluir disciplina
+        $(document).on('click', '.btn-excluir', function() {
+            indexParaExcluir = $(this).data('index');
+            var modal = new bootstrap.Modal(document.getElementById('modalExcluir'));
+            modal.show();
+        });
+        $('#btnConfirmarExcluir').on('click', function() {
+            if(indexParaExcluir !== null) {
+                window.location.href = '/excluir_disciplina/' + indexParaExcluir;
+            }
+        });
+        // Editar disciplina
+        $(document).on('click', '.btn-editar', function() {
+            var index = $(this).data('index');
+            var row = $(this).closest('tr');
+            $('#edit_index').val(index);
+            $('#edit_disciplina').val(row.find('td:eq(0)').text());
+            $('#edit_nota1').val(row.find('td:eq(1)').text());
+            $('#edit_nota2').val(row.find('td:eq(2)').text());
+            $('#edit_trabalho').val(row.find('td:eq(3)').text());
+            $('#edit_projeto').val(row.find('td:eq(4)').text());
+            var modal = new bootstrap.Modal(document.getElementById('modalEditar'));
+            modal.show();
+        });
+        // Submissão do formulário de edição
+        $('#formEditar').on('submit', function(e) {
+            e.preventDefault();
+            var index = $('#edit_index').val();
+            var data = $(this).serialize();
+            $.post('/editar_disciplina/' + index, data, function() {
+                window.location.reload();
+            });
+        });
+    // Validação JS do formulário de adição
+        $('#formAdicionar').on('submit', function(e) {
+            let valid = true;
+            let notas = [];
+            $(this).find('input[name="nota1"],input[name="nota2"],input[name="trabalho"],input[name="projeto"]').each(function() {
+                let v = $(this).val().replace(',', '.').trim();
+                if (v !== '') {
+                    let num = parseFloat(v);
+                    if (isNaN(num) || num < 0 || num > 20) {
+                        valid = false;
+                        $(this).addClass('is-invalid');
+                    } else {
+                        $(this).removeClass('is-invalid');
+                        notas.push(num);
+                    }
+                } else {
+                    $(this).removeClass('is-invalid');
+                }
+            });
+            if (notas.length < 3) {
+                valid = false;
+                alert('Preencha pelo menos 3 notas válidas entre 0 e 20.');
+            }
+            if (!valid) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        // Animação ao adicionar linha
+        let urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('adicionado')) {
+            $('#tabelaDisciplinas tbody tr').first().addClass('table-success');
+            setTimeout(function(){
+                $('#tabelaDisciplinas tbody tr').first().removeClass('table-success');
+            }, 1500);
+        }
+    });
+</script>
+</body>
+</html>

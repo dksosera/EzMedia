@@ -1,0 +1,35 @@
+[
+  {
+    "disciplina": "Fisica",
+    "notas": [
+      9.0,
+      10.0,
+      7.0,
+      null
+    ],
+    "media": 8.666666666666666,
+    "status": "Excluído"
+  },
+  {
+    "disciplina": "Engenharia",
+    "notas": [
+      14.0,
+      17.0,
+      10.0,
+      null
+    ],
+    "media": 13.666666666666666,
+    "status": "Dispensado"
+  },
+  {
+    "disciplina": "Matematica",
+    "notas": [
+      1.0,
+      19.0,
+      10.0,
+      10.0
+    ],
+    "media": 10.0,
+    "status": "Aprovado"
+  }
+]
