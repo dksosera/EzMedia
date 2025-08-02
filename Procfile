@@ -1,1 +1,1 @@
-web: gunicorn app:app
+web: gunicorn ezmedia_web:app
